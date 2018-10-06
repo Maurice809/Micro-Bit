@@ -1,0 +1,33 @@
+import radio
+from microbit import display, Image, button_a, button_b
+
+i = 0
+
+Test = [Image().invert()*(i/9) for i in range(9, -1, -1)]
+
+display.scroll('BLE')
+
+radio.on()
+
+while True:
+        
+    if button_a.was_pressed():
+        display.show(Image.ARROW_N)
+        radio.send('Test')  
+    
+    if button_b.was_pressed():
+        ecran = 'Tx :' + str(i)
+        display.scroll(ecran)
+        radio.config(power=i)
+        i = i + 1
+        if i == 8:
+                i = 0
+    
+    incoming = radio.receive()
+    
+    if incoming == 'Test':
+        radio.send('check')
+        display.show(Test, delay=100, wait=False)
+       
+    if incoming == 'check':
+        display.show(Image.HEART)
